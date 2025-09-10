@@ -1,10 +1,16 @@
 
-import './index.css'
+
 import ScrambleGame from '@/components/ScrambleGame';
+import { Toaster } from 'sonner'
 
 function App() {
 
-  return <ScrambleGame />;
+  return (
+    <>
+      <Toaster />
+      <ScrambleGame />;
+    </>
+  )
   
 }
 
