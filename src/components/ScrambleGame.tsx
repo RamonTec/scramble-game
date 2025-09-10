@@ -18,9 +18,8 @@ const SCORE_PER_LETTER = 10;
 const BOUNCE_MS = 600;
 const WRONG_RESET_MS = 900;
 const NEXT_WORD_MS = 1400;
-const FX_MS = 600; // how long board-level fx run
+const FX_MS = 600;
 
-/* ---------- helpers ---------- */
 const randInt = (n: number) => Math.floor(Math.random() * n);
 const pickRandom = <T,>(arr: readonly T[]) => arr[randInt(arr.length)];
 function scramble(word: string) {
@@ -38,7 +37,6 @@ function scrambleDistinct(word: string) {
   return s;
 }
 
-/* ---------- reducer ---------- */
 type Fx = "none" | "shake" | "pop";
 type State = {
   currentWord: string;
@@ -47,8 +45,8 @@ type State = {
   score: number;
   attempts: number;
   phase: GamePhase;
-  animating: boolean; // tile bounce on new word
-  fx: Fx;             // board-level effect
+  animating: boolean; 
+  fx: Fx; 
 };
 type Action =
   | { type: "NEW_WORD" }
@@ -102,10 +100,10 @@ function reducer(state: State, action: Action): State {
         ...state,
         phase: "correct",
         score: state.score + state.currentWord.length * SCORE_PER_LETTER,
-        fx: "pop", // board pop effect on success
+        fx: "pop",
       };
     case "CHECK_FAIL":
-      return { ...state, phase: "wrong", fx: "shake" }; // board shake on fail
+      return { ...state, phase: "wrong", fx: "shake" }; 
     case "RESET_TO_PLAYING":
       return { ...state, phase: "playing", userInput: "" };
     case "CLEAR_FX":
@@ -115,7 +113,6 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-/* ---------- component ---------- */
 const ScrambleGame = () => {
   const [state, dispatch] = useReducer(reducer, undefined, initialState);
   const timeoutsRef = useRef<number[]>([]);
@@ -128,13 +125,11 @@ const ScrambleGame = () => {
     };
   }, []);
 
-  // stop tile "new word" bounce
   useEffect(() => {
     const t = window.setTimeout(() => dispatch({ type: "STOP_ANIM" }), BOUNCE_MS);
     timeoutsRef.current.push(t);
   }, [state.scrambledWord]);
 
-  // clear board-level fx after FX_MS
   useEffect(() => {
     if (state.fx === "none") return;
     const t = window.setTimeout(() => dispatch({ type: "CLEAR_FX" }), FX_MS);
@@ -192,7 +187,7 @@ const ScrambleGame = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      {/* Board-level FX via conditional animate classes */}
+
       <Card
         className={cn(
           "w-full max-w-2xl mx-auto shadow-xl transform-gpu",
@@ -223,7 +218,6 @@ const ScrambleGame = () => {
                   key={`${letter}-${idx}`}
                   letter={letter}
                   animate={state.animating}
-                  // Tile-level pulse/shake based on phase
                   state={
                     state.phase === "correct"
                       ? "correct"
@@ -252,7 +246,7 @@ const ScrambleGame = () => {
                 disabled={!isPlaying}
                 className={cn(
                   "text-lg text-center font-semibold tracking-wide transform-gpu",
-                  state.phase === "wrong" && "animate-shake" // subtle shake on input as well
+                  state.phase === "wrong" && "animate-shake"
                 )}
                 aria-label="Your answer"
                 autoFocus
