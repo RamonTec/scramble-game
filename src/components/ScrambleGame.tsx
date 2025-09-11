@@ -84,6 +84,7 @@ function reducer(state: State, action: Action): State {
         currentWord: word,
         scrambledWord: scrambled,
         userInput: "",
+        attempts: state.attempts + 1,
         phase: "playing",
         animating: true,
         fx: "none",
